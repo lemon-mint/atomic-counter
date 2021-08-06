@@ -6,7 +6,7 @@ ADD . /app
 WORKDIR /app
 RUN go build -ldflags="-s -w" -v .
 
-FROM gcr.io/distroless/static:latest
+FROM scratch
 COPY --from=build /app /app
 EXPOSE 80
 WORKDIR /app
