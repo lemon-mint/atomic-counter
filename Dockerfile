@@ -6,8 +6,8 @@ ADD . /app
 WORKDIR /app
 RUN go build -ldflags="-s -w" -v .
 
-FROM alpine:latest
+FROM gcr.io/distroless/static:latest
 COPY --from=build /app /app
 EXPOSE 80
 WORKDIR /app
-CMD /app/atomic-counter
+ENTRYPOINT [ "/app/atomic-counter" ]
