@@ -3,7 +3,7 @@ name: build-latest
 
 on:
     push:
-      branches: [ master ]
+      branches: [ main ]
     workflow_dispatch:
 
 jobs:
