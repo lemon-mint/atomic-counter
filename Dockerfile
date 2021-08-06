@@ -9,4 +9,4 @@ RUN go build -ldflags="-s -w" -v -o server .
 FROM scratch
 COPY --from=build /app/server /server
 EXPOSE 80
-ENTRYPOINT [ "server" ]
+ENTRYPOINT [ "/server" ]
