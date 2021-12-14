@@ -19,6 +19,7 @@ func main() {
 	}
 	defer logf.Close()
 	fmt.Fprintln(logf, "env:HOST", os.Getenv("HOST"))
+	fmt.Fprintln(logf, "env:IP", os.Getenv("IP"))
 	fmt.Fprintln(logf, "env:PORT", os.Getenv("PORT"))
 	fmt.Fprintln(logf, "env:0.0.0.0", os.Getenv("0.0.0.0"))
 	hostbytes := []byte("hostname: " + hostname + "\ncounter: ")
@@ -32,6 +33,8 @@ func main() {
 	}
 	listenHost = os.Getenv("0.0.0.0")
 	listenPort = os.Getenv("PORT")
+	fmt.Fprintln(logf, "listenHost", listenHost)
+	fmt.Fprintln(logf, "listenPort", listenPort)
 	fasthttp.ListenAndServe(listenHost+":"+listenPort, func(ctx *fasthttp.RequestCtx) {
 		ctx.Response.Header.Set("Server", "php")
 		ctx.Write(hostbytes)
