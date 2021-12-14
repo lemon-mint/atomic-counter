@@ -22,22 +22,31 @@ func main() {
 	fmt.Fprintln(logf, "env:HOST", os.Getenv("HOST"))
 	fmt.Fprintln(logf, "env:IP", os.Getenv("IP"))
 	fmt.Fprintln(logf, "env:PORT", os.Getenv("PORT"))
-	fmt.Fprintln(logf, "env:0.0.0.0", os.Getenv("0.0.0.0"))
 	hostbytes := []byte("hostname: " + hostname + "\ncounter: ")
-	listenHost := os.Getenv("HOST")
-	listenPort := os.Getenv("PORT")
-	if len(listenHost) == 0 {
-		listenHost = "0.0.0.0"
+	lnHost := ":8080"
+	hostEnv := os.Getenv("HOST")
+	if hostEnv != "" {
+		lnHost = hostEnv
 	}
-	if len(listenPort) == 0 {
-		listenPort = "8080"
+	portEnv := os.Getenv("PORT")
+	if portEnv != "" {
+		lnHost = ":" + portEnv
+	} else {
+		portEnv = "8080"
 	}
-	listenHost = os.Getenv("0.0.0.0")
-	listenPort = os.Getenv("PORT")
-	fmt.Fprintln(logf, "listenHost", listenHost)
-	fmt.Fprintln(logf, "listenPort", listenPort)
-	fmt.Fprintln(logf, "["+os.Getenv("IP")+"]:"+listenPort)
-	ln, err := net.Listen("tcp", "["+os.Getenv("IP")+"]:"+listenPort)
+	ipEnv := os.Getenv("IP")
+	if ipEnv != "" {
+		ip := net.ParseIP(ipEnv)
+		if ip != nil {
+			lnHost = ipEnv + ":" + portEnv
+		}
+		if ip.To16() != nil {
+			lnHost = "[" + ipEnv + "]:" + portEnv
+		}
+	}
+
+	fmt.Fprintln(logf, lnHost)
+	ln, err := net.Listen("tcp", lnHost)
 	if err != nil {
 		fmt.Fprintln(logf, "Listen error:", err)
 		panic(err)
