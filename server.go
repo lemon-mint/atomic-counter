@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 
@@ -12,20 +13,26 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	logf, err := os.Create("./log")
+	if err != nil {
+		panic(err)
+	}
+	defer logf.Close()
+	fmt.Fprintln(logf, "env:HOST", os.Getenv("HOST"))
+	fmt.Fprintln(logf, "env:PORT", os.Getenv("PORT"))
+	fmt.Fprintln(logf, "env:0.0.0.0", os.Getenv("0.0.0.0"))
 	hostbytes := []byte("hostname: " + hostname + "\ncounter: ")
 	listenHost := os.Getenv("HOST")
 	listenPort := os.Getenv("PORT")
-	var lnHost string
-	if listenHost == "" && listenPort == "" {
-		lnHost = ":80"
-	} else if listenHost == "" && listenPort != "" {
-		lnHost = ":" + listenPort
-	} else if listenHost != "" && listenPort == "" {
-		lnHost = listenHost
-	} else {
-		lnHost = listenHost + ":" + listenPort
+	if len(listenHost) == 0 {
+		listenHost = "0.0.0.0"
 	}
-	fasthttp.ListenAndServe(lnHost, func(ctx *fasthttp.RequestCtx) {
+	if len(listenPort) == 0 {
+		listenPort = "8080"
+	}
+	listenHost = os.Getenv("0.0.0.0")
+	listenPort = os.Getenv("PORT")
+	fasthttp.ListenAndServe(listenHost+":"+listenPort, func(ctx *fasthttp.RequestCtx) {
 		ctx.Response.Header.Set("Server", "php")
 		ctx.Write(hostbytes)
 		ctx.WriteString(strconv.FormatUint(GetCounter(), 10))
