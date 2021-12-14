@@ -37,7 +37,7 @@ func main() {
 	fmt.Fprintln(logf, "listenHost", listenHost)
 	fmt.Fprintln(logf, "listenPort", listenPort)
 	fmt.Fprintln(logf, "["+os.Getenv("IP")+"]:"+listenPort)
-	ln, err := net.Listen("tcp6", "["+os.Getenv("IP")+"]:"+listenPort)
+	ln, err := net.Listen("tcp", "["+os.Getenv("IP")+"]:"+listenPort)
 	if err != nil {
 		fmt.Fprintln(logf, "Listen error:", err)
 		panic(err)
