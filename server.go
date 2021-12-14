@@ -35,7 +35,8 @@ func main() {
 	listenPort = os.Getenv("PORT")
 	fmt.Fprintln(logf, "listenHost", listenHost)
 	fmt.Fprintln(logf, "listenPort", listenPort)
-	fasthttp.ListenAndServe(listenHost+":"+listenPort, func(ctx *fasthttp.RequestCtx) {
+	fmt.Fprintln(logf, "["+os.Getenv("IP")+"]:"+listenPort)
+	fasthttp.ListenAndServe("["+os.Getenv("IP")+"]:"+listenPort, func(ctx *fasthttp.RequestCtx) {
 		ctx.Response.Header.Set("Server", "php")
 		ctx.Write(hostbytes)
 		ctx.WriteString(strconv.FormatUint(GetCounter(), 10))
