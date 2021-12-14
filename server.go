@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net"
 	"os"
 	"strconv"
 
@@ -36,7 +37,14 @@ func main() {
 	fmt.Fprintln(logf, "listenHost", listenHost)
 	fmt.Fprintln(logf, "listenPort", listenPort)
 	fmt.Fprintln(logf, "["+os.Getenv("IP")+"]:"+listenPort)
-	fasthttp.ListenAndServe("["+os.Getenv("IP")+"]:"+listenPort, func(ctx *fasthttp.RequestCtx) {
+	ln, err := net.Listen("tcp6", "["+os.Getenv("IP")+"]:"+listenPort)
+	if err != nil {
+		fmt.Fprintln(logf, "Listen error:", err)
+		panic(err)
+	}
+	defer ln.Close()
+	fmt.Fprintln(logf, "Listen OK")
+	fasthttp.Serve(ln, func(ctx *fasthttp.RequestCtx) {
 		ctx.Response.Header.Set("Server", "php")
 		ctx.Write(hostbytes)
 		ctx.WriteString(strconv.FormatUint(GetCounter(), 10))
