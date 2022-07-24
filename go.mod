@@ -1,6 +1,6 @@
 module github.com/lemon-mint/atomic-counter
 
-go 1.17
+go 1.18
 
 require github.com/valyala/fasthttp v1.38.0
 
